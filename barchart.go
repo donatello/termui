@@ -22,19 +22,20 @@ import "fmt"
 */
 type BarChart struct {
 	Block
-	BarColor   Attribute
-	TextColor  Attribute
-	NumColor   Attribute
-	Data       []int
-	DataLabels []string
-	BarWidth   int
-	BarGap     int
-	CellChar   rune
-	labels     [][]rune
-	dataNum    [][]rune
-	numBar     int
-	scale      float64
-	max        int
+	BarColor    Attribute
+	PerBarColor []Attribute
+	TextColor   Attribute
+	NumColor    Attribute
+	Data        []int
+	DataLabels  []string
+	BarWidth    int
+	BarGap      int
+	CellChar    rune
+	labels      [][]rune
+	dataNum     [][]rune
+	numBar      int
+	scale       float64
+	max         int
 }
 
 // NewBarChart returns a new *BarChart with current theme.
@@ -92,9 +93,15 @@ func (bc *BarChart) Buffer() Buffer {
 
 		barBg := bc.Bg
 		barFg := bc.BarColor
+		if len(bc.PerBarColor) == len(bc.Data) {
+			barFg = bc.PerBarColor[i]
+		}
 
 		if bc.CellChar == ' ' {
 			barBg = bc.BarColor
+			if len(bc.PerBarColor) == len(bc.Data) {
+				barFg = bc.PerBarColor[i]
+			}
 			barFg = ColorDefault
 			if bc.BarColor == ColorDefault { // the same as above
 				barBg |= AttrReverse
